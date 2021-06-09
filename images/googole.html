@@ -1,0 +1,922 @@
+{
+  "discoveryVersion": "v1",
+  "schemas": {
+    "ApiDimensionFilter": {
+      "id": "ApiDimensionFilter",
+      "properties": {
+        "expression": {
+          "type": "string"
+        },
+        "dimension": {
+          "enumDescriptions": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "enum": [
+            "QUERY",
+            "PAGE",
+            "COUNTRY",
+            "DEVICE",
+            "SEARCH_APPEARANCE"
+          ],
+          "type": "string"
+        },
+        "operator": {
+          "enumDescriptions": [
+            "",
+            "",
+            "",
+            ""
+          ],
+          "type": "string",
+          "enum": [
+            "EQUALS",
+            "NOT_EQUALS",
+            "CONTAINS",
+            "NOT_CONTAINS"
+          ]
+        }
+      },
+      "type": "object",
+      "description": "A filter test to be applied to each row in the data set, where a match can return the row. Filters are string comparisons, and values and dimension names are not case-sensitive. Individual filters are either AND'ed or OR'ed within their parent filter group, according to the group's group type. You do not need to group by a specified dimension to filter against it."
+    },
+    "SearchAnalyticsQueryRequest": {
+      "properties": {
+        "dimensionFilterGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "ApiDimensionFilterGroup"
+          },
+          "description": "[Optional] Zero or more filters to apply to the dimension grouping values; for example, 'query contains \\\"buy\\\"' to see only data where the query string contains the substring \\\"buy\\\" (not case-sensitive). You can filter by a dimension without grouping by it."
+        },
+        "rowLimit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "[Optional; Default is 1000] The maximum number of rows to return. Must be a number from 1 to 25,000 (inclusive)."
+        },
+        "endDate": {
+          "description": "[Required] End date of the requested date range, in YYYY-MM-DD format, in PST (UTC - 8:00). Must be greater than or equal to the start date. This value is included in the range.",
+          "type": "string"
+        },
+        "startDate": {
+          "type": "string",
+          "description": " [Required] Start date of the requested date range, in YYYY-MM-DD format, in PST time (UTC - 8:00). Must be less than or equal to the end date. This value is included in the range."
+        },
+        "startRow": {
+          "type": "integer",
+          "description": "[Optional; Default is 0] Zero-based index of the first row in the response. Must be a non-negative number.",
+          "format": "int32"
+        },
+        "searchType": {
+          "enumDescriptions": [
+            "",
+            "",
+            "",
+            ""
+          ],
+          "enum": [
+            "WEB",
+            "IMAGE",
+            "VIDEO",
+            "NEWS"
+          ],
+          "type": "string",
+          "description": "[Optional; Default is \\\"web\\\"] The search type to filter for."
+        },
+        "dataState": {
+          "type": "string",
+          "description": "The data state to be fetched, can be full or all, the latter including full and partial data.",
+          "enum": [
+            "DATA_STATE_UNSPECIFIED",
+            "FINAL",
+            "ALL"
+          ],
+          "enumDescriptions": [
+            "Default value, should not be used.",
+            "Include full final data only, without partial.",
+            "Include all data, full and partial."
+          ]
+        },
+        "dimensions": {
+          "items": {
+            "enum": [
+              "DATE",
+              "QUERY",
+              "PAGE",
+              "COUNTRY",
+              "DEVICE",
+              "SEARCH_APPEARANCE"
+            ],
+            "type": "string",
+            "enumDescriptions": [
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          "description": "[Optional] Zero or more dimensions to group results by. Dimensions are the group-by values in the Search Analytics page. Dimensions are combined to create a unique row key for each row. Results are grouped in the order that you supply these dimensions.",
+          "type": "array"
+        },
+        "aggregationType": {
+          "enum": [
+            "AUTO",
+            "BY_PROPERTY",
+            "BY_PAGE"
+          ],
+          "enumDescriptions": [
+            "",
+            "",
+            ""
+          ],
+          "description": "[Optional; Default is \\\"auto\\\"] How data is aggregated. If aggregated by property, all data for the same property is aggregated; if aggregated by page, all data is aggregated by canonical URI. If you filter or group by page, choose AUTO; otherwise you can aggregate either by property or by page, depending on how you want your data calculated; see the help documentation to learn how data is calculated differently by site versus by page. **Note:** If you group or filter by page, you cannot aggregate by property. If you specify any value other than AUTO, the aggregation type in the result will match the requested type, or if you request an invalid type, you will get an error. The API will never change your aggregation type if the requested type is invalid.",
+          "type": "string"
+        }
+      },
+      "id": "SearchAnalyticsQueryRequest",
+      "type": "object"
+    },
+    "TestStatus": {
+      "properties": {
+        "details": {
+          "type": "string",
+          "description": "Error details if applicable."
+        },
+        "status": {
+          "description": "Status of the test.",
+          "type": "string",
+          "enum": [
+            "TEST_STATUS_UNSPECIFIED",
+            "COMPLETE",
+            "INTERNAL_ERROR",
+            "PAGE_UNREACHABLE"
+          ],
+          "enumDescriptions": [
+            "Internal error when running this test. Please try running the test again.",
+            "Inspection has completed without errors.",
+            "Inspection terminated in an error state. This indicates a problem in Google's infrastructure, not a user error. Please try again later.",
+            "Google can not access the URL because of a user error such as a robots.txt blockage, a 403 or 500 code etc. Please make sure that the URL provided is accessible by Googlebot and is not password protected."
+          ]
+        }
+      },
+      "description": "Final state of the test, including error details if necessary.",
+      "id": "TestStatus",
+      "type": "object"
+    },
+    "WmxSitemap": {
+      "type": "object",
+      "properties": {
+        "isPending": {
+          "type": "boolean",
+          "description": "If true, the sitemap has not been processed."
+        },
+        "lastSubmitted": {
+          "format": "google-datetime",
+          "type": "string",
+          "description": "Date & time in which this sitemap was submitted. Date format is in RFC 3339 format (yyyy-mm-dd)."
+        },
+        "lastDownloaded": {
+          "format": "google-datetime",
+          "type": "string",
+          "description": "Date & time in which this sitemap was last downloaded. Date format is in RFC 3339 format (yyyy-mm-dd)."
+        },
+        "warnings": {
+          "format": "int64",
+          "description": "Number of warnings for the sitemap. These are generally non-critical issues with URLs in the sitemaps.",
+          "type": "string"
+        },
+        "contents": {
+          "items": {
+            "$ref": "WmxSitemapContent"
+          },
+          "description": "The various content types in the sitemap.",
+          "type": "array"
+        },
+        "type": {
+          "description": "The type of the sitemap. For example: `rssFeed`.",
+          "type": "string",
+          "enumDescriptions": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Unsupported sitemap types.",
+            ""
+          ],
+          "enum": [
+            "NOT_SITEMAP",
+            "URL_LIST",
+            "SITEMAP",
+            "RSS_FEED",
+            "ATOM_FEED",
+            "PATTERN_SITEMAP",
+            "OCEANFRONT"
+          ]
+        },
+        "isSitemapsIndex": {
+          "description": "If true, the sitemap is a collection of sitemaps.",
+          "type": "boolean"
+        },
+        "path": {
+          "description": "The url of the sitemap.",
+          "type": "string"
+        },
+        "errors": {
+          "type": "string",
+          "format": "int64",
+          "description": "Number of errors in the sitemap. These are issues with the sitemap itself that need to be fixed before it can be processed correctly."
+        }
+      },
+      "id": "WmxSitemap",
+      "description": "Contains detailed information about a specific URL submitted as a [sitemap](https://support.google.com/webmasters/answer/156184)."
+    },
+    "ApiDataRow": {
+      "type": "object",
+      "id": "ApiDataRow",
+      "properties": {
+        "impressions": {
+          "format": "double",
+          "type": "number"
+        },
+        "position": {
+          "type": "number",
+          "format": "double"
+        },
+        "clicks": {
+          "type": "number",
+          "format": "double"
+        },
+        "ctr": {
+          "format": "double",
+          "type": "number"
+        },
+        "keys": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      }
+    },
+    "RunMobileFriendlyTestRequest": {
+      "description": "Mobile-friendly test request.",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "URL for inspection."
+        },
+        "requestScreenshot": {
+          "description": "Whether or not screenshot is requested. Default is false.",
+          "type": "boolean"
+        }
+      },
+      "id": "RunMobileFriendlyTestRequest",
+      "type": "object"
+    },
+    "BlockedResource": {
+      "id": "BlockedResource",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "URL of the blocked resource."
+        }
+      },
+      "description": "Blocked resource.",
+      "type": "object"
+    },
+    "WmxSitemapContent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enumDescriptions": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Unsupported content type.",
+            "",
+            "Unsupported content type."
+          ],
+          "description": "The specific type of content in this sitemap. For example: `web`.",
+          "type": "string",
+          "enum": [
+            "WEB",
+            "IMAGE",
+            "VIDEO",
+            "NEWS",
+            "MOBILE",
+            "ANDROID_APP",
+            "PATTERN",
+            "IOS_APP",
+            "DATA_FEED_ELEMENT"
+          ]
+        },
+        "indexed": {
+          "format": "int64",
+          "type": "string",
+          "description": "The number of URLs from the sitemap that were indexed (of the content type)."
+        },
+        "submitted": {
+          "format": "int64",
+          "description": "The number of URLs in the sitemap (of the content type).",
+          "type": "string"
+        }
+      },
+      "id": "WmxSitemapContent",
+      "description": "Information about the various content types in the sitemap."
+    },
+    "ResourceIssue": {
+      "description": "Information about a resource with issue.",
+      "id": "ResourceIssue",
+      "properties": {
+        "blockedResource": {
+          "description": "Describes a blocked resource issue.",
+          "$ref": "BlockedResource"
+        }
+      },
+      "type": "object"
+    },
+    "WmxSite": {
+      "id": "WmxSite",
+      "type": "object",
+      "description": "Contains permission level information about a Search Console site. For more information, see [Permissions in Search Console](https://support.google.com/webmasters/answer/2451999).",
+      "properties": {
+        "siteUrl": {
+          "type": "string",
+          "description": "The URL of the site."
+        },
+        "permissionLevel": {
+          "enumDescriptions": [
+            "",
+            "Owner has complete access to the site.",
+            "Full users can access all data, and perform most of the operations.",
+            "Restricted users can access most of the data, and perform some operations.",
+            "Unverified user has no access to site's data."
+          ],
+          "enum": [
+            "SITE_PERMISSION_LEVEL_UNSPECIFIED",
+            "SITE_OWNER",
+            "SITE_FULL_USER",
+            "SITE_RESTRICTED_USER",
+            "SITE_UNVERIFIED_USER"
+          ],
+          "type": "string",
+          "description": "The user's permission level for the site."
+        }
+      }
+    },
+    "SearchAnalyticsQueryResponse": {
+      "type": "object",
+      "properties": {
+        "responseAggregationType": {
+          "enum": [
+            "AUTO",
+            "BY_PROPERTY",
+            "BY_PAGE"
+          ],
+          "description": "How the results were aggregated.",
+          "type": "string",
+          "enumDescriptions": [
+            "",
+            "",
+            ""
+          ]
+        },
+        "rows": {
+          "description": "A list of rows grouped by the key values in the order given in the query.",
+          "type": "array",
+          "items": {
+            "$ref": "ApiDataRow"
+          }
+        }
+      },
+      "description": "A list of rows, one per result, grouped by key. Metrics in each row are aggregated for all data grouped by that key either by page or property, as specified by the aggregation type parameter.",
+      "id": "SearchAnalyticsQueryResponse"
+    },
+    "MobileFriendlyIssue": {
+      "properties": {
+        "rule": {
+          "enumDescriptions": [
+            "Unknown rule. Sorry, we don't have any description for the rule that was broken.",
+            "Plugins incompatible with mobile devices are being used. [Learn more] (https://support.google.com/webmasters/answer/6352293#flash_usage).",
+            "Viewsport is not specified using the meta viewport tag. [Learn more] (https://support.google.com/webmasters/answer/6352293#viewport_not_configured).",
+            "Viewport defined to a fixed width. [Learn more] (https://support.google.com/webmasters/answer/6352293#fixed-width_viewport).",
+            "Content not sized to viewport. [Learn more] (https://support.google.com/webmasters/answer/6352293#content_not_sized_to_viewport).",
+            "Font size is too small for easy reading on a small screen. [Learn More] (https://support.google.com/webmasters/answer/6352293#small_font_size).",
+            "Touch elements are too close to each other. [Learn more] (https://support.google.com/webmasters/answer/6352293#touch_elements_too_close)."
+          ],
+          "description": "Rule violated.",
+          "type": "string",
+          "enum": [
+            "MOBILE_FRIENDLY_RULE_UNSPECIFIED",
+            "USES_INCOMPATIBLE_PLUGINS",
+            "CONFIGURE_VIEWPORT",
+            "FIXED_WIDTH_VIEWPORT",
+            "SIZE_CONTENT_TO_VIEWPORT",
+            "USE_LEGIBLE_FONT_SIZES",
+            "TAP_TARGETS_TOO_CLOSE"
+          ]
+        }
+      },
+      "description": "Mobile-friendly issue.",
+      "id": "MobileFriendlyIssue",
+      "type": "object"
+    },
+    "SitesListResponse": {
+      "type": "object",
+      "properties": {
+        "siteEntry": {
+          "type": "array",
+          "description": "Contains permission level information about a Search Console site. For more information, see [Permissions in Search Console](https://support.google.com/webmasters/answer/2451999).",
+          "items": {
+            "$ref": "WmxSite"
+          }
+        }
+      },
+      "id": "SitesListResponse",
+      "description": "List of sites with access level information."
+    },
+    "RunMobileFriendlyTestResponse": {
+      "id": "RunMobileFriendlyTestResponse",
+      "properties": {
+        "mobileFriendliness": {
+          "enumDescriptions": [
+            "Internal error when running this test. Please try running the test again.",
+            "The page is mobile friendly.",
+            "The page is not mobile friendly."
+          ],
+          "enum": [
+            "MOBILE_FRIENDLY_TEST_RESULT_UNSPECIFIED",
+            "MOBILE_FRIENDLY",
+            "NOT_MOBILE_FRIENDLY"
+          ],
+          "type": "string",
+          "description": "Test verdict, whether the page is mobile friendly or not."
+        },
+        "mobileFriendlyIssues": {
+          "items": {
+            "$ref": "MobileFriendlyIssue"
+          },
+          "type": "array",
+          "description": "List of mobile-usability issues."
+        },
+        "testStatus": {
+          "$ref": "TestStatus",
+          "description": "Final state of the test, can be either complete or an error."
+        },
+        "resourceIssues": {
+          "items": {
+            "$ref": "ResourceIssue"
+          },
+          "description": "Information about embedded resources issues.",
+          "type": "array"
+        },
+        "screenshot": {
+          "$ref": "Image",
+          "description": "Screenshot of the requested URL."
+        }
+      },
+      "description": "Mobile-friendly test response, including mobile-friendly issues and resource issues.",
+      "type": "object"
+    },
+    "Image": {
+      "properties": {
+        "data": {
+          "format": "byte",
+          "type": "string",
+          "description": "Image data in format determined by the mime type. Currently, the format will always be \"image/png\", but this might change in the future."
+        },
+        "mimeType": {
+          "type": "string",
+          "description": "The mime-type of the image data."
+        }
+      },
+      "id": "Image",
+      "type": "object",
+      "description": "Describe image data."
+    },
+    "SitemapsListResponse": {
+      "type": "object",
+      "properties": {
+        "sitemap": {
+          "description": "Contains detailed information about a specific URL submitted as a [sitemap](https://support.google.com/webmasters/answer/156184).",
+          "items": {
+            "$ref": "WmxSitemap"
+          },
+          "type": "array"
+        }
+      },
+      "description": "List of sitemaps.",
+      "id": "SitemapsListResponse"
+    },
+    "ApiDimensionFilterGroup": {
+      "properties": {
+        "filters": {
+          "items": {
+            "$ref": "ApiDimensionFilter"
+          },
+          "type": "array"
+        },
+        "groupType": {
+          "enum": [
+            "AND"
+          ],
+          "enumDescriptions": [
+            ""
+          ],
+          "type": "string"
+        }
+      },
+      "description": "A set of dimension value filters to test against each row. Only rows that pass all filter groups will be returned. All results within a filter group are either AND'ed or OR'ed together, depending on the group type selected. All filter groups are AND'ed together.",
+      "id": "ApiDimensionFilterGroup",
+      "type": "object"
+    }
+  },
+  "mtlsRootUrl": "https://searchconsole.mtls.googleapis.com/",
+  "auth": {
+    "oauth2": {
+      "scopes": {
+        "https://www.googleapis.com/auth/webmasters": {
+          "description": "View and manage Search Console data for your verified sites"
+        },
+        "https://www.googleapis.com/auth/webmasters.readonly": {
+          "description": "View Search Console data for your verified sites"
+        }
+      }
+    }
+  },
+  "servicePath": "",
+  "version": "v1",
+  "kind": "discovery#restDescription",
+  "description": "The Search Console API provides access to both Search Console data (verified users only) and to public information on an URL basis (anyone)",
+  "rootUrl": "https://searchconsole.googleapis.com/",
+  "name": "searchconsole",
+  "revision": "20210608",
+  "basePath": "",
+  "parameters": {
+    "oauth_token": {
+      "type": "string",
+      "location": "query",
+      "description": "OAuth 2.0 token for the current user."
+    },
+    "$.xgafv": {
+      "description": "V1 error format.",
+      "enumDescriptions": [
+        "v1 error format",
+        "v2 error format"
+      ],
+      "location": "query",
+      "enum": [
+        "1",
+        "2"
+      ],
+      "type": "string"
+    },
+    "key": {
+      "description": "API key. Your API key identifies your project and provides you with API access, quota, and reports. Required unless you provide an OAuth 2.0 token.",
+      "location": "query",
+      "type": "string"
+    },
+    "upload_protocol": {
+      "type": "string",
+      "description": "Upload protocol for media (e.g. \"raw\", \"multipart\").",
+      "location": "query"
+    },
+    "uploadType": {
+      "location": "query",
+      "type": "string",
+      "description": "Legacy upload protocol for media (e.g. \"media\", \"multipart\")."
+    },
+    "callback": {
+      "type": "string",
+      "location": "query",
+      "description": "JSONP"
+    },
+    "access_token": {
+      "location": "query",
+      "description": "OAuth access token.",
+      "type": "string"
+    },
+    "prettyPrint": {
+      "default": "true",
+      "description": "Returns response with indentations and line breaks.",
+      "type": "boolean",
+      "location": "query"
+    },
+    "fields": {
+      "location": "query",
+      "description": "Selector specifying which fields to include in a partial response.",
+      "type": "string"
+    },
+    "alt": {
+      "location": "query",
+      "description": "Data format for response.",
+      "enumDescriptions": [
+        "Responses with Content-Type of application/json",
+        "Media download with context-dependent Content-Type",
+        "Responses with Content-Type of application/x-protobuf"
+      ],
+      "default": "json",
+      "enum": [
+        "json",
+        "media",
+        "proto"
+      ],
+      "type": "string"
+    },
+    "quotaUser": {
+      "location": "query",
+      "description": "Available to use for quota purposes for server-side applications. Can be any arbitrary string assigned to a user, but should not exceed 40 characters.",
+      "type": "string"
+    }
+  },
+  "protocol": "rest",
+  "batchPath": "batch",
+  "id": "searchconsole:v1",
+  "version_module": true,
+  "resources": {
+    "sitemaps": {
+      "methods": {
+        "list": {
+          "description": " Lists the [sitemaps-entries](/webmaster-tools/v3/sitemaps) submitted for this site, or included in the sitemap index file (if `sitemapIndex` is specified in the request).",
+          "response": {
+            "$ref": "SitemapsListResponse"
+          },
+          "flatPath": "webmasters/v3/sites/{siteUrl}/sitemaps",
+          "scopes": [
+            "https://www.googleapis.com/auth/webmasters",
+            "https://www.googleapis.com/auth/webmasters.readonly"
+          ],
+          "id": "webmasters.sitemaps.list",
+          "path": "webmasters/v3/sites/{siteUrl}/sitemaps",
+          "parameterOrder": [
+            "siteUrl"
+          ],
+          "httpMethod": "GET",
+          "parameters": {
+            "siteUrl": {
+              "required": true,
+              "location": "path",
+              "type": "string",
+              "description": "The site's URL, including protocol. For example: `http://www.example.com/`."
+            },
+            "sitemapIndex": {
+              "type": "string",
+              "location": "query",
+              "description": " A URL of a site's sitemap index. For example: `http://www.example.com/sitemapindex.xml`."
+            }
+          }
+        },
+        "submit": {
+          "description": "Submits a sitemap for a site.",
+          "parameterOrder": [
+            "siteUrl",
+            "feedpath"
+          ],
+          "flatPath": "webmasters/v3/sites/{siteUrl}/sitemaps/{feedpath}",
+          "path": "webmasters/v3/sites/{siteUrl}/sitemaps/{feedpath}",
+          "httpMethod": "PUT",
+          "scopes": [
+            "https://www.googleapis.com/auth/webmasters"
+          ],
+          "parameters": {
+            "siteUrl": {
+              "description": "The site's URL, including protocol. For example: `http://www.example.com/`.",
+              "required": true,
+              "location": "path",
+              "type": "string"
+            },
+            "feedpath": {
+              "type": "string",
+              "location": "path",
+              "description": "The URL of the actual sitemap. For example: `http://www.example.com/sitemap.xml`.",
+              "required": true
+            }
+          },
+          "id": "webmasters.sitemaps.submit"
+        },
+        "get": {
+          "scopes": [
+            "https://www.googleapis.com/auth/webmasters",
+            "https://www.googleapis.com/auth/webmasters.readonly"
+          ],
+          "response": {
+            "$ref": "WmxSitemap"
+          },
+          "parameterOrder": [
+            "siteUrl",
+            "feedpath"
+          ],
+          "httpMethod": "GET",
+          "path": "webmasters/v3/sites/{siteUrl}/sitemaps/{feedpath}",
+          "id": "webmasters.sitemaps.get",
+          "flatPath": "webmasters/v3/sites/{siteUrl}/sitemaps/{feedpath}",
+          "description": "Retrieves information about a specific sitemap.",
+          "parameters": {
+            "feedpath": {
+              "type": "string",
+              "location": "path",
+              "required": true,
+              "description": "The URL of the actual sitemap. For example: `http://www.example.com/sitemap.xml`."
+            },
+            "siteUrl": {
+              "location": "path",
+              "required": true,
+              "description": "The site's URL, including protocol. For example: `http://www.example.com/`.",
+              "type": "string"
+            }
+          }
+        },
+        "delete": {
+          "scopes": [
+            "https://www.googleapis.com/auth/webmasters"
+          ],
+          "id": "webmasters.sitemaps.delete",
+          "path": "webmasters/v3/sites/{siteUrl}/sitemaps/{feedpath}",
+          "httpMethod": "DELETE",
+          "parameters": {
+            "siteUrl": {
+              "type": "string",
+              "required": true,
+              "location": "path",
+              "description": "The site's URL, including protocol. For example: `http://www.example.com/`."
+            },
+            "feedpath": {
+              "required": true,
+              "type": "string",
+              "location": "path",
+              "description": "The URL of the actual sitemap. For example: `http://www.example.com/sitemap.xml`."
+            }
+          },
+          "description": "Deletes a sitemap from this site.",
+          "parameterOrder": [
+            "siteUrl",
+            "feedpath"
+          ],
+          "flatPath": "webmasters/v3/sites/{siteUrl}/sitemaps/{feedpath}"
+        }
+      }
+    },
+    "searchanalytics": {
+      "methods": {
+        "query": {
+          "flatPath": "webmasters/v3/sites/{siteUrl}/searchAnalytics/query",
+          "httpMethod": "POST",
+          "request": {
+            "$ref": "SearchAnalyticsQueryRequest"
+          },
+          "scopes": [
+            "https://www.googleapis.com/auth/webmasters",
+            "https://www.googleapis.com/auth/webmasters.readonly"
+          ],
+          "description": "Query your data with filters and parameters that you define. Returns zero or more rows grouped by the row keys that you define. You must define a date range of one or more days. When date is one of the group by values, any days without data are omitted from the result list. If you need to know which days have data, issue a broad date range query grouped by date for any metric, and see which day rows are returned.",
+          "response": {
+            "$ref": "SearchAnalyticsQueryResponse"
+          },
+          "id": "webmasters.searchanalytics.query",
+          "parameterOrder": [
+            "siteUrl"
+          ],
+          "path": "webmasters/v3/sites/{siteUrl}/searchAnalytics/query",
+          "parameters": {
+            "siteUrl": {
+              "required": true,
+              "location": "path",
+              "description": "The site's URL, including protocol. For example: `http://www.example.com/`.",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "urlTestingTools": {
+      "resources": {
+        "mobileFriendlyTest": {
+          "methods": {
+            "run": {
+              "flatPath": "v1/urlTestingTools/mobileFriendlyTest:run",
+              "path": "v1/urlTestingTools/mobileFriendlyTest:run",
+              "parameters": {},
+              "description": "Runs Mobile-Friendly Test for a given URL.",
+              "httpMethod": "POST",
+              "request": {
+                "$ref": "RunMobileFriendlyTestRequest"
+              },
+              "parameterOrder": [],
+              "id": "searchconsole.urlTestingTools.mobileFriendlyTest.run",
+              "response": {
+                "$ref": "RunMobileFriendlyTestResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sites": {
+      "methods": {
+        "add": {
+          "description": " Adds a site to the set of the user's sites in Search Console.",
+          "httpMethod": "PUT",
+          "flatPath": "webmasters/v3/sites/{siteUrl}",
+          "parameterOrder": [
+            "siteUrl"
+          ],
+          "id": "webmasters.sites.add",
+          "path": "webmasters/v3/sites/{siteUrl}",
+          "scopes": [
+            "https://www.googleapis.com/auth/webmasters"
+          ],
+          "parameters": {
+            "siteUrl": {
+              "required": true,
+              "type": "string",
+              "description": "The URL of the site to add.",
+              "location": "path"
+            }
+          }
+        },
+        "delete": {
+          "httpMethod": "DELETE",
+          "scopes": [
+            "https://www.googleapis.com/auth/webmasters"
+          ],
+          "description": " Removes a site from the set of the user's Search Console sites.",
+          "flatPath": "webmasters/v3/sites/{siteUrl}",
+          "id": "webmasters.sites.delete",
+          "parameterOrder": [
+            "siteUrl"
+          ],
+          "path": "webmasters/v3/sites/{siteUrl}",
+          "parameters": {
+            "siteUrl": {
+              "required": true,
+              "description": "The URI of the property as defined in Search Console. **Examples:** `http://www.example.com/` or `sc-domain:example.com`.",
+              "location": "path",
+              "type": "string"
+            }
+          }
+        },
+        "get": {
+          "scopes": [
+            "https://www.googleapis.com/auth/webmasters",
+            "https://www.googleapis.com/auth/webmasters.readonly"
+          ],
+          "id": "webmasters.sites.get",
+          "parameters": {
+            "siteUrl": {
+              "type": "string",
+              "location": "path",
+              "required": true,
+              "description": "The URI of the property as defined in Search Console. **Examples:** `http://www.example.com/` or `sc-domain:example.com`."
+            }
+          },
+          "path": "webmasters/v3/sites/{siteUrl}",
+          "response": {
+            "$ref": "WmxSite"
+          },
+          "parameterOrder": [
+            "siteUrl"
+          ],
+          "description": " Retrieves information about specific site.",
+          "httpMethod": "GET",
+          "flatPath": "webmasters/v3/sites/{siteUrl}"
+        },
+        "list": {
+          "parameters": {},
+          "id": "webmasters.sites.list",
+          "httpMethod": "GET",
+          "path": "webmasters/v3/sites",
+          "scopes": [
+            "https://www.googleapis.com/auth/webmasters",
+            "https://www.googleapis.com/auth/webmasters.readonly"
+          ],
+          "description": " Lists the user's Search Console sites.",
+          "parameterOrder": [],
+          "flatPath": "webmasters/v3/sites",
+          "response": {
+            "$ref": "SitesListResponse"
+          }
+        }
+      }
+    }
+  },
+  "ownerDomain": "google.com",
+  "icons": {
+    "x32": "http://www.google.com/images/icons/product/search-32.gif",
+    "x16": "http://www.google.com/images/icons/product/search-16.gif"
+  },
+  "canonicalName": "Search Console",
+  "ownerName": "Google",
+  "fullyEncodeReservedExpansion": true,
+  "documentationLink": "https://developers.google.com/webmaster-tools/search-console-api/",
+  "baseUrl": "https://searchconsole.googleapis.com/",
+  "title": "Google Search Console API"
+}
